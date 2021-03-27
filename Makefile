@@ -30,12 +30,12 @@ AR        = ar rv
 # add a compilation option on the terminal command line:
 # "PYTHON=python3 make all" (THanks to Marius Millea for pyhton3
 # compatibility)
-PYTHON ?= python
+PYTHON ?= python3
 
 # your optimization flag
-OPTFLAG = -O4 -ffast-math #-lgsl -lgslcblas #-march=native
+# OPTFLAG = -O4 -ffast-math #-lgsl -lgslcblas #-march=native
 #OPTFLAG = -O4 -ffast-math -lgsl -lgslcblas -lfftw3 -lm #-march=native
-#OPTFLAG = -Ofast -ffast-math #-march=native
+OPTFLAG = -Ofast -ffast-math -mtune=native
 #OPTFLAG = -fast
 
 # your openmp flag (comment for compiling without openmp)
@@ -44,18 +44,12 @@ OMPFLAG   = -fopenmp
 #OMPFLAG   = -openmp
 
 # all other compilation flags
-CCFLAG = -g -fPIC -ggdb3
+CCFLAG = -g -fPIC
 LDFLAG = -g -fPIC
 
 # leave blank to compile without HyRec, or put path to HyRec directory
 # (with no slash at the end: e.g. hyrec or ../hyrec)
 HYREC = hyrec
-
-#put your path to libopenblas.a here
-#OPENBLAS = /opt/OpenBLAS/lib/libopenblas.a
-#OPENBLAS = /Users/michalychforever/Dropbox/Docs/science/OpenBLAS-0.2.20/libopenblas.a
-#OPENBLAS = /home/ivanov/Desktop/Structures/OpenBLAS-0.2.20/lib/libopenblas.a
-OPENBLAS = /home/ophilcox/OpenBLAS-0.3.9/libopenblas.a
 
 ########################################################
 ###### IN PRINCIPLE THE REST SHOULD BE LEFT UNCHANGED ##
@@ -151,7 +145,7 @@ libclass.a: $(TOOLS) $(SOURCE) $(EXTERNAL)
 	$(AR)  $@ $(addprefix build/, $(TOOLS) $(SOURCE) $(EXTERNAL))
 
 class: $(TOOLS) $(SOURCE) $(EXTERNAL) $(OUTPUT) $(CLASS)
-	$(CC) $(OPTFLAG) $(OMPFLAG) $(LDFLAG) -o class $(addprefix build/,$(notdir $^)) $(OPENBLAS) -lpthread -lm
+	$(CC) $(OPTFLAG) $(OMPFLAG) $(LDFLAG) -o class $(addprefix build/,$(notdir $^)) -lopenblas -lpthread -lm
 
 test_sigma: $(TOOLS) $(SOURCE) $(EXTERNAL) $(OUTPUT) $(TEST_SIGMA)
 	$(CC) $(OPTFLAG) $(OMPFLAG) $(LDFLAG) -o test_sigma $(addprefix build/,$(notdir $^)) -lm
